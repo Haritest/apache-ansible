@@ -1,0 +1,27 @@
+---
+# tasks file for apache
+
+- name: Only run "update_cache=yes" if the last one is more than 3600 seconds ago
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install apache
+  apt:
+    name: apache2
+    state: latest
+
+- name: Enable rewrite module
+  apache2_module: name=rewrite state=present
+  notify:
+    - restart apache2
+
+- name: Enable headers mdule
+  apache2_module: name=headers state=present
+  notify:
+    - restart apache2
+
+- name: copy Index.html
+  template: 
+    src: index.html.j2
+    dest: /var/www/html/index.html

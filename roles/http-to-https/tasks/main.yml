@@ -1,0 +1,30 @@
+---
+# tasks file for http-to-https
+
+ - name: enable apache-module
+   apache2_module: name="{{ item }}" state=present
+   with_items:
+     - proxy
+     - proxy_http
+     - ssl
+   notify:
+     - restart apache2
+
+ - name: create document root
+   file:    
+     path: "{{ doc_root }}"
+     state: directory  
+
+ - name: copy http virtualhost 
+   template:
+     src: "{{ domainname }}.conf.j2"
+     dest: /etc/apache2/sites-available/{{ domainname }}.conf 
+   notify:
+     - restart apache2
+   tags: cvh
+
+ - name: a2ensite "{{ domainname }}"
+   command: a2ensite "{{ domainname }}.conf"
+   notify:
+     - restart apache2
+   tags: ntp

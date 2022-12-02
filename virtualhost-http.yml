@@ -1,0 +1,6 @@
+---
+ - hosts: my-app
+   become: true
+
+   roles:
+     - http-to-https 

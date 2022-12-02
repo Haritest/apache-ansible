@@ -1,0 +1,5 @@
+---
+# vars file for http-to-https
+domainname: ec2-54-161-83-49.compute-1.amazonaws.com
+doc_root: /var/www/html/my_project
+

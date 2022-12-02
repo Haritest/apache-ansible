@@ -1,0 +1,7 @@
+
+x="{{ groups['dev'][0] }}, {{ groups['dev'][1] }}"
+cassandra_cluster_size: "{{ groups['dev'] | length }}"
+
+listen_address: {{hostvars[inventory_hostname]['ansible_default_ipv4']['address']}}
+
+test: "{{groups['dev']|join(',')}}"

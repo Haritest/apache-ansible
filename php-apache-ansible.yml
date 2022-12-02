@@ -1,0 +1,8 @@
+---
+- hosts: tarento-dev
+  become: true
+  
+  roles:
+    - apache
+    - php-apache
+

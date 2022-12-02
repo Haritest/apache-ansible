@@ -1,0 +1,5 @@
+---
+# vars file for http-to-https
+domainname: alloc.idc.tarento.com
+doc_root: /var/www/html/alloc
+

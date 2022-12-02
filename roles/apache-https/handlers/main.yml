@@ -1,0 +1,6 @@
+---
+# handlers file for apache-https
+
+- name: restart apache2
+  service: name=apache2 state=restarted
+

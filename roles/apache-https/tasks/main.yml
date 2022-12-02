@@ -1,0 +1,23 @@
+---
+# tasks file for apache-https
+- name: Create ssl folder
+  file:
+    path: /etc/apache2/ssl
+    state: directory
+
+- name: copy SSL key cert and https virtualhsot
+  template: src={{item.src}} dest={{item.dest}}
+  with_items:
+     - { src: '{{ domainname }}-ssl.conf.j2', dest: '/etc/apache2/sites-available/{{ domainname }}-ssl.conf' }
+     - { src: 'ssl.key.j2', dest: '/etc/apache2/ssl/{{ domainname }}.key' }
+     - { src: 'ssl.cert.j2', dest: '/etc/apache2/ssl/{{ domainname }}.pem' }
+  notify:
+    - restart apache2
+  tags: cvh
+
+- name: a2ensite "{{ domainname }}"
+  command: a2ensite "{{ domainname }}-ssl.conf"
+  notify:
+    - restart apache2
+  tags: ntp
+

@@ -1,0 +1,61 @@
+---
+# tasks file for apache
+
+- name: Only run "update_cache=yes" if the last one is more than 3600 seconds ago
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install libapache2-modsecurity
+  apt:
+    name: libapache2-mod-security2
+    state: latest
+
+- name: Enable security2 module
+  apache2_module: name=security2 state=present
+  notify:
+    - restart apache2
+
+- name: copy  modsecurity.conf
+  template:
+   src: modsecurity.conf.j2
+   dest: /etc/modsecurity/modsecurity.conf
+  notify:
+    - restart apache2
+
+#- name: backup old rules directory
+#  shell: mv /usr/share/modsecurity-crs /usr/share/modsecurity-crs.bak
+
+- name: clone rules from github
+  git:
+    repo: https://github.com/SpiderLabs/owasp-modsecurity-crs.git
+#    version: master
+    dest: /usr/share/modsecurity-crs
+#    clone: no
+    update: no
+  tags:
+  - conf1
+
+
+- name: copy the sample configuration file
+  command: cp /usr/share/modsecurity-crs/crs-setup.conf.example /usr/share/modsecurity-crs/crs-setup.conf
+
+#- name: soft link from base_rules to activated_rules
+#  shell: cp /usr/share/modsecurity-crs/base_rules/* /usr/share/modsecurity-crs/activated_rules/
+#  tags:
+#  - conf
+ 
+- name: insert IncludeOptional in security2.conf line
+  blockinfile:
+    path: /etc/apache2/mods-enabled/security2.conf
+    insertafter: "# make your life easier"
+    content: |
+      IncludeOptional /usr/share/modsecurity-crs/*.conf
+      IncludeOptional /usr/share/modsecurity-crs/activated_rules/*.conf
+  tags:
+  - conf12
+  notify:
+    - restart apache2
+
+
+

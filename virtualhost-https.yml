@@ -1,0 +1,8 @@
+---
+- hosts: my-app 
+  become: true
+
+  roles:
+    - apache-https
+
+

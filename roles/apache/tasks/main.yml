@@ -1,0 +1,22 @@
+---
+# tasks file for apache
+
+
+- name: copy Index.html
+  template: 
+    src: test.j2
+    dest: /home/hari/index.html
+
+ 
+- debug: var=hostvars[inventory_hostname]['ansible_default_ipv4']['address']
+- debug: var=hostvars[inventory_hostname]['ansible_default_ipv6']['address']
+
+- name: getting the server hostname
+  command: hostname
+  register: hostnameOfCql
+
+- name: add entry in hosts file
+  become: yes
+  lineinfile:
+    line: "127.0.0.1 {{hostnameOfCql.stdout}}"
+    path: /etc/hosts

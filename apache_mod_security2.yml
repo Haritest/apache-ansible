@@ -1,0 +1,8 @@
+---
+- hosts: tarento-dev
+  become: true
+
+  roles:
+    - apache_mod_security2
+
+

@@ -1,0 +1,25 @@
+<VirtualHost *:80>
+
+ServerName {{ domainname }}
+ServerAlias {{ domainname }}
+DocumentRoot "{{ doc_root }}"
+
+DirectoryIndex index.php index.html
+
+<Directory "{{ doc_root }}">
+Options Indexes FollowSymLinks Multiviews
+AllowOverride  All
+Order allow,deny
+Allow from all
+Require all granted
+</Directory>
+
+#RewriteEngine On
+#RewriteCond %{HTTPS} off
+#RewriteRule (.*) https://%{SERVER_NAME}/$1 [R,L]
+
+CustomLog /var/log/apache2/{{ domainname }}_access.log combined
+ErrorLog /var/log/apache2/{{ domainname }}_error.log
+
+
+</VirtualHost>
